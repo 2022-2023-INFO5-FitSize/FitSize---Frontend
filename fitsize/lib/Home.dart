@@ -18,7 +18,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  @override
   void startCamera() async {
     cameras = await availableCameras();
     cameraController = CameraController(

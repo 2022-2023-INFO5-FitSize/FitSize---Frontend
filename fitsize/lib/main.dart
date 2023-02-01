@@ -16,10 +16,26 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   int _index = 1;
   final screens = [
-    CataloguePage(),
+    const CataloguePage(
+      imageUrls: [
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirt2.jpeg'
+      ],
+    ),
     HomePage(),
     //SettingsPage(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
