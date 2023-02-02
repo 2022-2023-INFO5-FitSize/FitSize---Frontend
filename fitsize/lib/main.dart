@@ -20,7 +20,7 @@ class _MainAppState extends State<MainApp> {
     const CataloguePage(
       imageUrls: [
         'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirtb.webp',
         'assets/images/tshirt.jpeg',
         'assets/images/tshirt2.jpeg',
         'assets/images/tshirt.jpeg',
@@ -30,7 +30,8 @@ class _MainAppState extends State<MainApp> {
         'assets/images/tshirt.jpeg',
         'assets/images/tshirt2.jpeg',
         'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg'
+        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirtb.webp',
       ],
     ),
     HomePage(),
