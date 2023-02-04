@@ -9,8 +9,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<CameraDescription> cameras;
+  List<CameraDescription> cameras = [];
   late CameraController cameraController;
+  bool _cameraInitialized = false;
 
   @override
   void initState() {
@@ -19,18 +20,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   void startCamera() async {
-    cameras = await availableCameras();
+    final cameras = await availableCameras();
+
     cameraController = CameraController(
       cameras[0],
-      ResolutionPreset.high,
-      enableAudio: false,
+      ResolutionPreset.medium,
     );
 
     await cameraController.initialize().then((value) {
       if (!mounted) {
         return;
       }
-      setState(() {});
+      setState(() {
+        _cameraInitialized = true;
+      });
     }).catchError((e) {
       print(e);
     });
@@ -39,13 +42,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     cameraController.dispose();
-    cameraController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext) {
-    if (cameraController.value.isInitialized) {
+    if (cameraController.value.isInitialized && _cameraInitialized == true) {
       return Scaffold(
         body: Stack(
           children: [
