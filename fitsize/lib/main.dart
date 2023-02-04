@@ -1,5 +1,6 @@
 import 'package:fitsize/Catalogue.dart';
-import 'package:fitsize/Home.dart';
+import 'package:fitsize/home.dart';
+import 'package:fitsize/settings.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,10 +17,27 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   int _index = 1;
   final screens = [
-    CataloguePage(),
+    const CataloguePage(
+      imageUrls: [
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirtb.webp',
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirt.jpeg',
+        'assets/images/tshirt2.jpeg',
+        'assets/images/tshirtb.webp',
+      ],
+    ),
     HomePage(),
-    //SettingsPage(),
+    const SettingsPage(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
