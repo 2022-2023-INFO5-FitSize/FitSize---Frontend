@@ -12,6 +12,7 @@ class _HomePageState extends State<HomePage> {
   List<CameraDescription> cameras = [];
   late CameraController cameraController;
   bool _cameraInitialized = false;
+  String _dropdownValue = "Shirt";
 
   @override
   void initState() {
@@ -45,6 +46,14 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  void dropdownCallback(String? selectedValue) {
+    if (selectedValue is String) {
+      setState(() {
+        _dropdownValue = selectedValue;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext) {
     if (cameraController.value.isInitialized && _cameraInitialized == true) {
@@ -52,6 +61,24 @@ class _HomePageState extends State<HomePage> {
         body: Stack(
           children: [
             CameraPreview(cameraController),
+            Container(
+              alignment: Alignment.bottomCenter,
+              margin: const EdgeInsets.only(
+                left: 0,
+                bottom: 100,
+              ),
+              child: DropdownButton(
+                items: const [
+                  DropdownMenuItem(child: Text("Shirt"), value: "Shirt"),
+                  DropdownMenuItem(child: Text("Pantalon"), value: "Pantalon"),
+                  DropdownMenuItem(child: Text("Pull"), value: "Pull"),
+                  DropdownMenuItem(child: Text("Calecon"), value: "Calecon"),
+                ],
+                value: _dropdownValue,
+                onChanged: dropdownCallback,
+                iconEnabledColor: Colors.blue,
+              ),
+            ),
             GestureDetector(
               onTap: () {
                 cameraController.takePicture().then((XFile? file) {
@@ -63,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                 });
               },
               child: button(Icons.camera, Alignment.bottomCenter),
-            )
+            ),
           ],
         ),
       );
