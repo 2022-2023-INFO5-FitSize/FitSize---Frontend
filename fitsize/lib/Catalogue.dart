@@ -39,7 +39,7 @@ class _CataloguePageState extends State<CataloguePage> {
           mainAxisSpacing: 4.0,
           crossAxisSpacing: 4.0,
           children: List.generate(widget.imageUrls.length, (index) {
-            return Container(
+            return SizedBox(
               height: 200,
               width: 200,
               child: InkWell(
