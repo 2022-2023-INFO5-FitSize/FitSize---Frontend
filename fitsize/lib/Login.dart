@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'main.dart';
+import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,20 +15,31 @@ class _LoginPageState extends State<LoginPage> {
   late String email;
   late String password;
 
+  // Fonction qui récupère le mot de passe dans un Json
+  String getPasswordFromJson(String jsonStr) {
+    Map<String, dynamic> jsonMap = json.decode(jsonStr);
+    String password = jsonMap["password"];
+    return password;
+  }
+
+  // Fonction qui fait une requete GET pour vérifier les champs
   Future<void> submitForm() async {
     if (formKey.currentState != null) {
       if (formKey.currentState!.validate()) {
         formKey.currentState!.save();
         try {
           final response = await http.get(
-            Uri.parse(
-                "http://10.0.2.2:8000/polls/user?login=$email&password=$password"),
+            Uri.parse("http://10.0.2.2:8000/polls/user/login/$email"),
           );
           print(response.body);
+          late List<String> res = response.body.split("password");
           if (response.statusCode == 200) {
-            print("ok");
-          } else {
-            print("erreur");
+            if (password == getPasswordFromJson(response.body)) {
+              Navigator.push( // On accède a l'accueil
+                  context, MaterialPageRoute(builder: (context) => MainApp()));
+            } else {
+              print("erreur");
+            }
           }
         } catch (e) {
           // error
@@ -116,8 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 80,
                   width: 250,
                   padding: const EdgeInsets.fromLTRB(40, 30, 40, 0),
-                  child:
-                  ElevatedButton(
+                  child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.indigo,
                     ),
