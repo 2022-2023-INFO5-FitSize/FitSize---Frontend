@@ -1,5 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -54,6 +58,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void sendPicture(String imagePath) async {
+    try {
+      File imagefile = File(imagePath);
+      Uint8List imagebytes = await imagefile.readAsBytes();
+      String base64string = base64.encode(imagebytes);
+
+      var response = await http.post(
+        Uri.parse("http://10.0.2.2:8000/keypoints/execScript/"),
+        body: {"clothing": _dropdownValue, "image": base64string},
+      );
+      print(response.body);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext) {
     if (cameraController.value.isInitialized && _cameraInitialized == true) {
@@ -72,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                   DropdownMenuItem(child: Text("Shirt"), value: "Shirt"),
                   DropdownMenuItem(child: Text("Pantalon"), value: "Pantalon"),
                   DropdownMenuItem(child: Text("Pull"), value: "Pull"),
-                  DropdownMenuItem(child: Text("Calecon"), value: "Calecon"),
+                  DropdownMenuItem(child: Text("trousers"), value: "trousers"),
                 ],
                 value: _dropdownValue,
                 onChanged: dropdownCallback,
@@ -85,6 +105,9 @@ class _HomePageState extends State<HomePage> {
                   if (mounted) {
                     if (file != null) {
                       print("Picture saved to ${file.path}");
+                      print(
+                          "YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                      sendPicture(file.path); // Envoie la requete au serveur
                     }
                   }
                 });
