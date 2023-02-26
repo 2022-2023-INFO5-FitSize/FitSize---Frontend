@@ -78,6 +78,23 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext) {
     if (cameraController.value.isInitialized && _cameraInitialized == true) {
       return Scaffold(
+        appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Row(
+              children: [
+                Image.asset(
+                  'assets/images/FitSizeLogo.png',
+                  scale: 5,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text(
+                  'Accueil',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            )),
         body: Stack(
           children: [
             CameraPreview(cameraController),
