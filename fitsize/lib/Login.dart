@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'User.dart';
+import 'UserProvider.dart';
 import 'main.dart';
 import 'dart:convert';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,12 +18,20 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   late String email;
   late String password;
+  late int userId;
 
   // Fonction qui récupère le mot de passe dans un Json
   String getPasswordFromJson(String jsonStr) {
     Map<String, dynamic> jsonMap = json.decode(jsonStr);
     String password = jsonMap["password"];
     return password;
+  }
+
+  // Fonction qui récupère l'id dans un Json
+  int getIdFromJson(String jsonStr) {
+    Map<String, dynamic> jsonMap = json.decode(jsonStr);
+    int id = jsonMap["id"];
+    return id;
   }
 
   // Fonction qui fait une requete GET pour vérifier les champs
@@ -31,10 +43,9 @@ class _LoginPageState extends State<LoginPage> {
           final response = await http.get(
             Uri.parse("http://10.0.2.2:8000/polls/user/login/$email"),
           );
-          print(response.body);
-          late List<String> res = response.body.split("password");
           if (response.statusCode == 200) {
             if (password == getPasswordFromJson(response.body)) {
+              userId = getIdFromJson(response.body);
               Navigator.push( // On accède a l'accueil
                   context, MaterialPageRoute(builder: (context) => MainApp()));
             } else {

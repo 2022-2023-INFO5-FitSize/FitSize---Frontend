@@ -19,21 +19,6 @@ class _MainAppState extends State<MainApp> {
   int _index = 1;
   final screens = [
     const CataloguePage(
-      imageUrls: [
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirtb.webp',
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg',
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg',
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg',
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg',
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg',
-        'assets/images/tshirtb.webp',
-      ],
     ),
     HomePage(),
     const LoginPage(),
