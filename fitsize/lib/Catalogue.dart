@@ -31,8 +31,22 @@ class _CataloguePageState extends State<CataloguePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Catalogue'),
-        ),
+            backgroundColor: Colors.white,
+            title: Row(
+              children: [
+                Image.asset(
+                  'assets/images/FitSizeLogo.png',
+                  scale: 5,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text(
+                  'Catalogue',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            )),
         body: GridView.count(
           crossAxisCount: 2,
           childAspectRatio: 1.0,

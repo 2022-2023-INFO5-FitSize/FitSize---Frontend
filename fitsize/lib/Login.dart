@@ -20,7 +20,8 @@ class _LoginPageState extends State<LoginPage> {
         formKey.currentState!.save();
         try {
           final response = await http.get(
-            Uri.parse("http://10.0.2.2:8000/polls/user?login=$email&password=$password"),
+            Uri.parse(
+                "http://10.0.2.2:8000/polls/user?login=$email&password=$password"),
           );
           print(response.body);
           if (response.statusCode == 200) {
@@ -39,8 +40,22 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Connexion'),
-        ),
+            backgroundColor: Colors.white,
+            title: Row(
+              children: [
+                Image.asset(
+                  'assets/images/FitSizeLogo.png',
+                  scale: 5,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text(
+                  'Se connecter',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            )),
         body: Center(
             child: Form(
           key: formKey,
@@ -101,9 +116,10 @@ class _LoginPageState extends State<LoginPage> {
                   height: 80,
                   width: 250,
                   padding: const EdgeInsets.fromLTRB(40, 30, 40, 0),
-                  child: ElevatedButton(
+                  child:
+                  ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
+                      backgroundColor: Colors.indigo,
                     ),
                     onPressed: submitForm,
                     child: const Text('Connexion'),
