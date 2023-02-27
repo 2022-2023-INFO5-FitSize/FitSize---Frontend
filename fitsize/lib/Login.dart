@@ -1,3 +1,4 @@
+import 'package:fitsize/Catalogue.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -5,7 +6,6 @@ import 'User.dart';
 import 'UserProvider.dart';
 import 'main.dart';
 import 'dart:convert';
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -46,8 +46,12 @@ class _LoginPageState extends State<LoginPage> {
           if (response.statusCode == 200) {
             if (password == getPasswordFromJson(response.body)) {
               userId = getIdFromJson(response.body);
-              Navigator.push( // On accède a l'accueil
-                  context, MaterialPageRoute(builder: (context) => MainApp()));
+              final userProvider = Provider.of<UserProvider>(context, listen: false);
+              userProvider.setUser(User(id: userId));
+              Navigator.push(
+                  // On accède a l'accueil
+                  context,
+                  MaterialPageRoute(builder: (context) => MainApp()));
             } else {
               print("erreur");
             }

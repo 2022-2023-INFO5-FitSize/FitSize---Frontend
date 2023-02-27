@@ -30,6 +30,9 @@ class _CataloguePageState extends State<CataloguePage> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final userId = userProvider.user.id;
+    print(userId);
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
