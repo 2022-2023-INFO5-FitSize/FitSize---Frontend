@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   List<CameraDescription> cameras = [];
   late CameraController cameraController;
   bool _cameraInitialized = false;
-  String _dropdownValue = "Shirt";
+  String _dropdownValue = "trousers";
 
   @override
   void initState() {
@@ -66,7 +66,10 @@ class _HomePageState extends State<HomePage> {
 
       var response = await http.post(
         Uri.parse("http://10.0.2.2:8000/keypoints/execScript/"),
-        body: {"clothing": _dropdownValue, "image": base64string},
+        body: jsonEncode(<String, String>{
+          "clothing": _dropdownValue,
+          "image": base64string
+        }),
       );
       print(response.body);
     } catch (e) {
@@ -89,10 +92,11 @@ class _HomePageState extends State<HomePage> {
               ),
               child: DropdownButton(
                 items: const [
-                  DropdownMenuItem(child: Text("Shirt"), value: "Shirt"),
-                  DropdownMenuItem(child: Text("Pantalon"), value: "Pantalon"),
-                  DropdownMenuItem(child: Text("Pull"), value: "Pull"),
+                  DropdownMenuItem(child: Text("blouse"), value: "blouse"),
+                  DropdownMenuItem(child: Text("dress"), value: "dress"),
+                  DropdownMenuItem(child: Text("outwear"), value: "outwear"),
                   DropdownMenuItem(child: Text("trousers"), value: "trousers"),
+                  DropdownMenuItem(child: Text("skirt"), value: "skirt"),
                 ],
                 value: _dropdownValue,
                 onChanged: dropdownCallback,
