@@ -27,30 +27,30 @@ class _CataloguePageState extends State<CataloguePage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final userId = userProvider.user.id;
-    print(userId);
-    return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Row(
-            children: [
-              Image.asset(
-                'assets/images/FitSizeLogo.png',
-                scale: 5,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              const Text(
-                'Catalogue',
-                style: TextStyle(color: Colors.black),
-              ),
-            ],
-          )),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Row(
+              children: [
+                Image.asset(
+                  'assets/images/FitSizeLogo.png',
+                  scale: 5,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text(
+                  'Catalogue',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            )),
+      ),
     );
   }
 }

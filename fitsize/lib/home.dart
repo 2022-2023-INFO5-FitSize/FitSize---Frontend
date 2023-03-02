@@ -78,64 +78,67 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  Widget build(BuildContext) {
+  Widget build(BuildContext context) {
     if (cameraController.value.isInitialized && _cameraInitialized == true) {
-      return Scaffold(
-        appBar: AppBar(
-            backgroundColor: Colors.white,
-            title: Row(
-              children: [
-                Image.asset(
-                  'assets/images/FitSizeLogo.png',
-                  scale: 5,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                const Text(
-                  'Accueil',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ],
-            )),
-        body: Stack(
-          children: [
-            CameraPreview(cameraController),
-            Container(
-              alignment: Alignment.bottomCenter,
-              margin: const EdgeInsets.only(
-                left: 0,
-                bottom: 100,
-              ),
-              child: DropdownButton(
-                items: const [
-                  DropdownMenuItem(child: Text("blouse"), value: "blouse"),
-                  DropdownMenuItem(child: Text("dress"), value: "dress"),
-                  DropdownMenuItem(child: Text("outwear"), value: "outwear"),
-                  DropdownMenuItem(child: Text("trousers"), value: "trousers"),
-                  DropdownMenuItem(child: Text("skirt"), value: "skirt"),
+      return MaterialApp(
+        home: Scaffold(
+          appBar: AppBar(
+              backgroundColor: Colors.white,
+              title: Row(
+                children: [
+                  Image.asset(
+                    'assets/images/FitSizeLogo.png',
+                    scale: 5,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  const Text(
+                    'Accueil',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ],
-                value: _dropdownValue,
-                onChanged: dropdownCallback,
-                iconEnabledColor: Colors.blue,
+              )),
+          body: Stack(
+            children: [
+              CameraPreview(cameraController),
+              Container(
+                alignment: Alignment.bottomCenter,
+                margin: const EdgeInsets.only(
+                  left: 0,
+                  bottom: 90,
+                ),
+                child: DropdownButton(
+                  items: const [
+                    DropdownMenuItem(child: Text("blouse"), value: "blouse"),
+                    DropdownMenuItem(child: Text("dress"), value: "dress"),
+                    DropdownMenuItem(child: Text("outwear"), value: "outwear"),
+                    DropdownMenuItem(
+                        child: Text("trousers"), value: "trousers"),
+                    DropdownMenuItem(child: Text("skirt"), value: "skirt"),
+                  ],
+                  value: _dropdownValue,
+                  onChanged: dropdownCallback,
+                  iconEnabledColor: Colors.blue,
+                ),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                cameraController.takePicture().then((XFile? file) {
-                  if (mounted) {
-                    if (file != null) {
-                      print("Picture saved to ${file.path}");
-                      print(
-                          "YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-                      sendPicture(file.path); // Envoie la requete au serveur
+              GestureDetector(
+                onTap: () {
+                  cameraController.takePicture().then((XFile? file) {
+                    if (mounted) {
+                      if (file != null) {
+                        print("Picture saved to ${file.path}");
+                        print(
+                            "YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                        sendPicture(file.path); // Envoie la requete au serveur
+                      }
                     }
-                  }
-                });
-              },
-              child: button(Icons.camera, Alignment.bottomCenter),
-            ),
-          ],
+                  });
+                },
+                child: button(Icons.camera, Alignment.bottomCenter),
+              ),
+            ],
+          ),
         ),
       );
     } else {
@@ -149,7 +152,7 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         margin: const EdgeInsets.only(
           left: 0,
-          bottom: 20,
+          bottom: 50,
         ),
         height: 50,
         width: 50,

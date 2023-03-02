@@ -51,10 +51,12 @@ class _LoginAppState extends State<LoginApp> {
 
   // Fonction qui fait une requete GET pour vérifier les champs
   Future<void> submitForm() async {
-    Navigator.push(
-        // On accède a l'accueil
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()));
+    Navigator.pushReplacement<void, void>(
+      context,
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => const MainApp(),
+      ),
+    );
     if (formKey.currentState != null) {
       if (formKey.currentState!.validate()) {
         formKey.currentState!.save();
@@ -69,7 +71,13 @@ class _LoginAppState extends State<LoginApp> {
                   Provider.of<UserProvider>(context, listen: false);
               userProvider.setUser(User(id: userId));
               print("lol");
-              Get.to(MainApp());
+              //Get.to(MainApp());
+              Navigator.pushReplacement<void, void>(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => const MainApp(),
+                ),
+              );
             } else {
               print("erreur");
             }

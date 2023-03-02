@@ -6,6 +6,7 @@ import 'package:fitsize/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
+import 'package:flutter/cupertino.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
@@ -15,41 +16,40 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  int _index = 1;
-  final screens = [
-    const CataloguePage(),
-    HomePage(),
-    const SettingsPage(),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
         home: SafeArea(
-      child: Scaffold(
-          body: screens[_index],
-          bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _index,
-              onTap: (value) {
-                setState(() {
-                  _index = value;
+      child: CupertinoTabScaffold(
+          tabBar: CupertinoTabBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.search),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+              ),
+            ],
+          ),
+          tabBuilder: (context, index) {
+            switch (index) {
+              case 0:
+                return CupertinoTabView(builder: (context) {
+                  return CupertinoPageScaffold(child: HomePage());
                 });
-              },
-              backgroundColor: const Color.fromARGB(255, 227, 227, 227),
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.book),
-                  label: 'Catalogue',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.photo_camera),
-                  label: 'Accueil',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: 'Paramètres',
-                ),
-              ])),
+              case 1:
+                return CupertinoTabView(builder: (context) {
+                  return CupertinoPageScaffold(child: CataloguePage());
+                });
+              default:
+                return CupertinoTabView(builder: (context) {
+                  return CupertinoPageScaffold(child: SettingsPage());
+                });
+            }
+          }),
     ));
   }
 }
