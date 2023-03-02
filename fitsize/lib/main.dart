@@ -1,11 +1,16 @@
 import 'package:fitsize/Catalogue.dart';
 import 'package:fitsize/Login.dart';
+import 'package:fitsize/UserProvider.dart';
 import 'package:fitsize/home.dart';
 import 'package:fitsize/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
+    child: const MainApp(),
+  ));
 }
 
 class MainApp extends StatefulWidget {
@@ -18,23 +23,7 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   int _index = 1;
   final screens = [
-    const CataloguePage(
-      imageUrls: [
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirtb.webp',
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg',
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg',
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg',
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg',
-        'assets/images/tshirt.jpeg',
-        'assets/images/tshirt2.jpeg',
-        'assets/images/tshirtb.webp',
-      ],
-    ),
+    const CataloguePage(),
     HomePage(),
     const LoginPage(),
   ];

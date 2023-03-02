@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'UserProvider.dart';
 import 'detailClothes.dart';
 
 class CataloguePage extends StatefulWidget {
-  final List<String> imageUrls;
-
-  const CataloguePage({super.key, required this.imageUrls});
+  const CataloguePage({super.key});
 
   @override
   State<CataloguePage> createState() => _CataloguePageState();
@@ -27,52 +27,30 @@ class _CataloguePageState extends State<CataloguePage> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final userId = userProvider.user.id;
+    print(userId);
     return Scaffold(
-        appBar: AppBar(
-            backgroundColor: Colors.white,
-            title: Row(
-              children: [
-                Image.asset(
-                  'assets/images/FitSizeLogo.png',
-                  scale: 5,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                const Text(
-                  'Catalogue',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ],
-            )),
-        body: GridView.count(
-          crossAxisCount: 2,
-          childAspectRatio: 1.0,
-          mainAxisSpacing: 4.0,
-          crossAxisSpacing: 4.0,
-          children: List.generate(widget.imageUrls.length, (index) {
-            return SizedBox(
-              height: 200,
-              width: 200,
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          DetailClothesPage(image: widget.imageUrls[index]),
-                    ),
-                  );
-                },
-                child: Image(
-                  image: AssetImage(widget.imageUrls[index]),
-                  fit: BoxFit.cover,
-                ),
+      appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Row(
+            children: [
+              Image.asset(
+                'assets/images/FitSizeLogo.png',
+                scale: 5,
               ),
-            );
-          }),
-        ));
+              const SizedBox(
+                width: 10,
+              ),
+              const Text(
+                'Catalogue',
+                style: TextStyle(color: Colors.black),
+              ),
+            ],
+          )),
+    );
   }
 }

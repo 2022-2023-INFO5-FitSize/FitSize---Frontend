@@ -1,6 +1,11 @@
+import 'package:fitsize/Catalogue.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'User.dart';
+import 'UserProvider.dart';
 import 'main.dart';
+import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,21 +18,43 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   late String email;
   late String password;
+  late int userId;
 
+  // Fonction qui récupère le mot de passe dans un Json
+  String getPasswordFromJson(String jsonStr) {
+    Map<String, dynamic> jsonMap = json.decode(jsonStr);
+    String password = jsonMap["password"];
+    return password;
+  }
+
+  // Fonction qui récupère l'id dans un Json
+  int getIdFromJson(String jsonStr) {
+    Map<String, dynamic> jsonMap = json.decode(jsonStr);
+    int id = jsonMap["id"];
+    return id;
+  }
+
+  // Fonction qui fait une requete GET pour vérifier les champs
   Future<void> submitForm() async {
     if (formKey.currentState != null) {
       if (formKey.currentState!.validate()) {
         formKey.currentState!.save();
         try {
           final response = await http.get(
-            Uri.parse(
-                "http://10.0.2.2:8000/polls/user?login=$email&password=$password"),
+            Uri.parse("http://10.0.2.2:8000/polls/user/login/$email"),
           );
-          print(response.body);
           if (response.statusCode == 200) {
-            print("ok");
-          } else {
-            print("erreur");
+            if (password == getPasswordFromJson(response.body)) {
+              userId = getIdFromJson(response.body);
+              final userProvider = Provider.of<UserProvider>(context, listen: false);
+              userProvider.setUser(User(id: userId));
+              Navigator.push(
+                  // On accède a l'accueil
+                  context,
+                  MaterialPageRoute(builder: (context) => MainApp()));
+            } else {
+              print("erreur");
+            }
           }
         } catch (e) {
           // error
@@ -116,8 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 80,
                   width: 250,
                   padding: const EdgeInsets.fromLTRB(40, 30, 40, 0),
-                  child:
-                  ElevatedButton(
+                  child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.indigo,
                     ),
