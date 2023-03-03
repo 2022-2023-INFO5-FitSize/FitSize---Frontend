@@ -17,8 +17,7 @@ class CataloguePage extends StatefulWidget {
 class _CataloguePageState extends State<CataloguePage> {
   late PageController _pageController;
   int currentPage = 0;
-
-  List<String> names = [];
+  Map<int, String> data = {};
 
   @override
   void initState() {
@@ -29,27 +28,29 @@ class _CataloguePageState extends State<CataloguePage> {
     fetchData(login);
   }
 
-  // Fonction qui récupère le mot de passe dans un Json
-  List<String> getNameFromJson(List<dynamic> jsonList) {
-    List<String> names = [];
-    for (var item in jsonList) {
-      final name = item['name'];
-      if (name != null && name.isNotEmpty) {
-        names.add(name);
-      }
+  // Fonction qui parse le json et stocke dans une map, l'id et le nom du vetement
+  Map<int, String> parseJsonToMap(String jsonString) {
+    List<dynamic> data = json.decode(jsonString);
+    Map<int, String> result = {};
+
+    for (dynamic item in data) {
+      int id = item['id'];
+      String name = item['name'];
+      result[id] = name;
     }
-    return names;
+
+    return result;
   }
 
+  // Fonction qui récupère les données
   Future<void> fetchData(String login) async {
     final response = await http
         .get(Uri.parse('http://10.0.2.2:8000/polls/usermodel/login/$login'));
 
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      final names = getNameFromJson(jsonData);
+      final data = parseJsonToMap(response.body);
       setState(() {
-        this.names = names;
+        this.data = data;
       });
     } else {
       throw Exception('Failed to load names');
@@ -83,12 +84,18 @@ class _CataloguePageState extends State<CataloguePage> {
             ],
           )),
       body: ListView.builder(
-        itemCount: names.length,
-        itemBuilder: (context, index) {
-          final name = names[index];
+        itemCount: data.length,
+        itemBuilder: (BuildContext context, int index) {
+          int id = data.keys.elementAt(index);
+          String? name = data[id];
           return ElevatedButton(
-            child: Text(name),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DetailClothesPage(idUser: id)));
+            },
+            child: Text(name!),
           );
         },
       ),
