@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'UserProvider.dart';
 import 'detailClothes.dart';
 
@@ -27,30 +26,30 @@ class _CataloguePageState extends State<CataloguePage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    final userId = userProvider.user.id;
-    print(userId);
-    return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Row(
-            children: [
-              Image.asset(
-                'assets/images/FitSizeLogo.png',
-                scale: 5,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              const Text(
-                'Catalogue',
-                style: TextStyle(color: Colors.black),
-              ),
-            ],
-          )),
+    //final userProvider = Provider.of<UserProvider>(context);
+    //final userId = userProvider.user.id;
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Row(
+              children: [
+                Image.asset(
+                  'assets/images/FitSizeLogo.png',
+                  scale: 5,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text(
+                  'Catalogue',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            )),
+      ),
     );
   }
 }

@@ -46,12 +46,13 @@ class _LoginPageState extends State<LoginPage> {
           if (response.statusCode == 200) {
             if (password == getPasswordFromJson(response.body)) {
               userId = getIdFromJson(response.body);
-              final userProvider = Provider.of<UserProvider>(context, listen: false);
+              final userProvider =
+                  Provider.of<UserProvider>(context, listen: false);
               userProvider.setUser(User(id: userId));
-              Navigator.push(
-                  // On accède a l'accueil
-                  context,
-                  MaterialPageRoute(builder: (context) => MainApp()));
+              //Navigator.push(
+              // On accède a l'accueil
+              //    context,
+              //    MaterialPageRoute(builder: (context) => MainApp()));
             } else {
               print("erreur");
             }
