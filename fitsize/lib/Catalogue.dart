@@ -64,39 +64,41 @@ class _CataloguePageState extends State<CataloguePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Row(
-            children: [
-              Image.asset(
-                'assets/images/FitSizeLogo.png',
-                scale: 5,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              const Text(
-                'Catalogue',
-                style: TextStyle(color: Colors.black),
-              ),
-            ],
-          )),
-      body: ListView.builder(
-        itemCount: data.length,
-        itemBuilder: (BuildContext context, int index) {
-          int id = data.keys.elementAt(index);
-          String? name = data[id];
-          return ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DetailClothesPage(idUser: id)));
-            },
-            child: Text(name!),
-          );
-        },
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Row(
+              children: [
+                Image.asset(
+                  'assets/images/FitSizeLogo.png',
+                  scale: 5,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text(
+                  'Catalogue',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            )),
+        body: ListView.builder(
+          itemCount: data.length,
+          itemBuilder: (BuildContext context, int index) {
+            int id = data.keys.elementAt(index);
+            String? name = data[id];
+            return ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DetailClothesPage(idUser: id)));
+              },
+              child: Text(name!),
+            );
+          },
+        ),
       ),
     );
   }

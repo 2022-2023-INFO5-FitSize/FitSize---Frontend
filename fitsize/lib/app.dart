@@ -1,5 +1,4 @@
 import 'package:fitsize/Catalogue.dart';
-import 'package:fitsize/Login.dart';
 import 'package:fitsize/UserProvider.dart';
 import 'package:fitsize/home.dart';
 import 'package:fitsize/settings.dart';

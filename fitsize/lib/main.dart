@@ -1,5 +1,4 @@
 import 'package:fitsize/Catalogue.dart';
-import 'package:fitsize/Login.dart';
 import 'package:fitsize/UserProvider.dart';
 import 'package:fitsize/app.dart';
 import 'package:fitsize/home.dart';
@@ -17,8 +16,11 @@ import 'dart:convert';
 import 'package:get/get.dart';
 
 void main() {
-  runApp(MaterialApp(
-    home: const LoginApp(),
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
+    child: MaterialApp(
+      home: LoginApp(),
+    )
   ));
 }
 
@@ -51,12 +53,6 @@ class _LoginAppState extends State<LoginApp> {
 
   // Fonction qui fait une requete GET pour vérifier les champs
   Future<void> submitForm() async {
-    Navigator.pushReplacement<void, void>(
-      context,
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) => const MainApp(),
-      ),
-    );
     if (formKey.currentState != null) {
       if (formKey.currentState!.validate()) {
         formKey.currentState!.save();
@@ -69,9 +65,7 @@ class _LoginAppState extends State<LoginApp> {
               userId = getIdFromJson(response.body);
               final userProvider =
                   Provider.of<UserProvider>(context, listen: false);
-              userProvider.setUser(User(id: userId));
-              print("lol");
-              //Get.to(MainApp());
+              userProvider.setUser(User(id: userId, login: email));
               Navigator.pushReplacement<void, void>(
                 context,
                 MaterialPageRoute<void>(
