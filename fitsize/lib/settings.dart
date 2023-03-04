@@ -10,11 +10,13 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Paramètres'),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Paramètres'),
+        ),
+        body: const Center(child: Text('Page Paramètre')),
       ),
-      body: const Center(child: Text('Page Paramètre')),
     );
   }
 }
