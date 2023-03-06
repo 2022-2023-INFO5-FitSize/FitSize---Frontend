@@ -83,20 +83,36 @@ class _CataloguePageState extends State<CataloguePage> {
                 ),
               ],
             )),
-        body: ListView.builder(
+        body: GridView.builder(
+          padding: const EdgeInsets.all(10),
           itemCount: data.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.8,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+          ),
           itemBuilder: (BuildContext context, int index) {
             int id = data.keys.elementAt(index);
-            String? name = data[id];
-            return ElevatedButton(
-              onPressed: () {
+            return GestureDetector(
+              onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            DetailClothesPage(idClothes: id)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailClothesPage(idClothes: id),
+                  ),
+                );
               },
-              child: Text(name!),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Image.asset(
+                      "assets/images/${id}.png",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         ),
