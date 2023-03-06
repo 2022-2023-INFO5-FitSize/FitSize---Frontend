@@ -1,19 +1,11 @@
-import 'package:fitsize/Catalogue.dart';
 import 'package:fitsize/UserProvider.dart';
 import 'package:fitsize/app.dart';
-import 'package:fitsize/home.dart';
-import 'package:fitsize/settings.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fitsize/Catalogue.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'User.dart';
-import 'UserProvider.dart';
-import 'main.dart';
 import 'dart:convert';
-import 'package:get/get.dart';
 
 void main() {
   runApp(MultiProvider(

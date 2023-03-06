@@ -1,10 +1,7 @@
 import 'package:fitsize/Catalogue.dart';
-import 'package:fitsize/UserProvider.dart';
 import 'package:fitsize/home.dart';
 import 'package:fitsize/settings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 
 class MainApp extends StatefulWidget {
@@ -18,7 +15,7 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-        home: SafeArea(
+        home: CupertinoPageScaffold(
       child: CupertinoTabScaffold(
           tabBar: CupertinoTabBar(
             items: const <BottomNavigationBarItem>[

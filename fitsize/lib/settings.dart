@@ -15,13 +15,42 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final login = userProvider.user.login;
-    print(login);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Paramètres'),
+            backgroundColor: Colors.white,
+            title: Row(
+              children: [
+                Image.asset(
+                  'assets/images/FitSizeLogo.png',
+                  scale: 5,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text(
+                  'Paramètres',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            )),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Bonjour $login",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text("Se déconnecter"),
+              ),
+            ],
+          ),
         ),
-        body: const Center(child: Text('Page Paramètre')),
       ),
     );
   }
