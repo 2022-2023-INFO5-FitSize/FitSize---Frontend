@@ -15,7 +15,7 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-        home: SafeArea(
+        home: CupertinoPageScaffold(
       child: CupertinoTabScaffold(
           tabBar: CupertinoTabBar(
             items: const <BottomNavigationBarItem>[

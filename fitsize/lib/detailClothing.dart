@@ -16,7 +16,9 @@ class _DetailsClothesState extends State<DetailClothesPage> {
   late String name = '';
   late String dimensions = '';
   late String typeOfClothing = '';
+  late double neckline = 0.0;
   bool isLoading = true;
+  Map<String, double> dimensionsMap = {};
 
   @override
   void initState() {
@@ -31,12 +33,27 @@ class _DetailsClothesState extends State<DetailClothesPage> {
     typeOfClothing = jsonData["clothingtype"]["label"];
   }
 
+  Map<String, double> parseDimensions(String str) {
+    String cleanStr = str.replaceAll(RegExp(r'[{} ]'), '');
+    List<String> keyValuePairs = cleanStr.split(',');
+    Map<String, double> values = {};
+    for (String pair in keyValuePairs) {
+      List<String> keyValue = pair.split(':');
+      String key = keyValue[0].replaceAll("'", "");
+      double value = double.parse(keyValue[1]);
+      values[key] = value;
+    }
+    return values;
+  }
+
   fetchData(idClothes) async {
     final response = await http
         .get(Uri.parse('http://10.0.2.2:8000/polls/usermodel/$idClothes'));
 
     if (response.statusCode == 200) {
       parseJson(response.body);
+      dimensionsMap = parseDimensions(
+          dimensions); // stocke proprement les dimensions dans une map
       setState(() {
         isLoading =
             false; // Actualiser isLoading après avoir récupéré les données
@@ -50,18 +67,35 @@ class _DetailsClothesState extends State<DetailClothesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Détail de $name"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.black, // ou toute autre couleur
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        backgroundColor: Colors.white,
+        title: Row(
+          children: [
+            Text(
+              'Détail de $name',
+              style: TextStyle(color: Colors.black),
+            ),
+          ],
+        ),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 100.0),
-              child: Image.asset(
-                'assets/images/tshirt.jpeg',
-                width: 300,
-                height: 300,
+            Expanded(
+              child: Align(
+                alignment: Alignment.center,
+                child: Image.asset(
+                  'assets/images/tshirt.jpeg',
+                  width: 300,
+                  height: 300,
+                ),
               ),
             ),
             isLoading // Vérifier si les données ont été chargées avec succès
@@ -69,9 +103,21 @@ class _DetailsClothesState extends State<DetailClothesPage> {
                     '',
                     style: TextStyle(fontSize: 20),
                   )
-                : Text(
-                    '$dimensions',
-                    style: TextStyle(fontSize: 20),
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: dimensionsMap.length,
+                      itemBuilder: (context, index) {
+                        String key = dimensionsMap.keys.elementAt(index);
+                        double? value = dimensionsMap[key];
+                        return ListTile(
+                          title: Text(
+                            key,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          trailing: Text(value.toString()),
+                        );
+                      },
+                    ),
                   ),
           ],
         ),

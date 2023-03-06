@@ -93,7 +93,8 @@ class _CataloguePageState extends State<CataloguePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => DetailClothesPage(idClothes: id)));
+                        builder: (context) =>
+                            DetailClothesPage(idClothes: id)));
               },
               child: Text(name!),
             );

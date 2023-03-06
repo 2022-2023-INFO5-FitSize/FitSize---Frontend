@@ -29,7 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   width: 10,
                 ),
                 const Text(
-                  'Catalogue',
+                  'Paramètres',
                   style: TextStyle(color: Colors.black),
                 ),
               ],
