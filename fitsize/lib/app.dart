@@ -34,15 +34,15 @@ class _MainAppState extends State<MainApp> {
             switch (index) {
               case 0:
                 return CupertinoTabView(builder: (context) {
-                  return CupertinoPageScaffold(child: HomePage());
+                  return const CupertinoPageScaffold(child: HomePage());
                 });
               case 1:
                 return CupertinoTabView(builder: (context) {
-                  return CupertinoPageScaffold(child: CataloguePage());
+                  return const CupertinoPageScaffold(child: CataloguePage());
                 });
               default:
                 return CupertinoTabView(builder: (context) {
-                  return CupertinoPageScaffold(child: SettingsPage());
+                  return const CupertinoPageScaffold(child: SettingsPage());
                 });
             }
           }),

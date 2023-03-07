@@ -17,6 +17,7 @@ class _HomePageState extends State<HomePage> {
   late CameraController cameraController;
   bool _cameraInitialized = false;
   String _dropdownValue = "trousers";
+  String taskId = "";
 
   @override
   void initState() {
@@ -71,9 +72,21 @@ class _HomePageState extends State<HomePage> {
           "image": base64string
         }),
       );
-      print(response.body);
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
+      taskId = jsonData["task_id"];
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<void> getDataFromTaskId(String id) async {
+    final response = await http
+        .get(Uri.parse('http://10.0.2.2:8000/keypoints/taskStatus/$id'));
+
+    if (response.statusCode == 200) {
+      print(response.body);
+    } else {
+      throw Exception('Failed to load');
     }
   }
 
@@ -111,6 +124,7 @@ class _HomePageState extends State<HomePage> {
                           print("Picture saved to ${file.path}");
                           sendPicture(
                               file.path); // Envoie la requete au serveur
+                          getDataFromTaskId(taskId); // requete get pour recevoir les données de la tache
                         }
                       }
                     });
