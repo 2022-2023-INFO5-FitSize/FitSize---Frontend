@@ -63,6 +63,18 @@ class _DetailsClothesState extends State<DetailClothesPage> {
     }
   }
 
+  deleteClothes() async {
+    final response = await http.delete(
+      Uri.parse('http://10.0.2.2:8000/polls/usermodel/${widget.idClothes}/'),
+    );
+
+    if (response.statusCode == 204) {
+      Navigator.pop(context);
+    } else {
+      throw Exception('Failed to delete clothes.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,6 +95,12 @@ class _DetailsClothesState extends State<DetailClothesPage> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete, size: 30, color: Colors.black),
+            onPressed: () => deleteClothes(),
+          ),
+        ],
       ),
       body: Center(
         child: Column(

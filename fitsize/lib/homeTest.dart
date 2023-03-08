@@ -127,7 +127,7 @@ class _HomePageTestState extends State<HomePageTest> {
 
     // on créer l'objet data
     var data = {
-      "name": "TShirt",
+      "name": "Calecon",
       "dimensions": dimensionsFinal,
       "user": idUser,
       "clothingtype": 3
@@ -177,12 +177,22 @@ class _HomePageTestState extends State<HomePageTest> {
                 'assets/images/slipwomarks.jpg',
                 fit: BoxFit.cover,
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  handlingData("assets/images/slipwomarks.jpg");
-                },
-                child: Text('Photo'),
+              const SizedBox(height: 70),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black,
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    handlingData("assets/images/slipwomarks.jpg");
+                  },
+                  icon: Icon(
+                    Icons.photo_camera,
+                    color: Colors.white,
+                  ),
+                  iconSize: 40,
+                ),
               ),
             ],
           )),
