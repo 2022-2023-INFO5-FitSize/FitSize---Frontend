@@ -17,6 +17,7 @@ class _CataloguePageState extends State<CataloguePage> {
   late PageController _pageController;
   int currentPage = 0;
   Map<int, String> data = {};
+  late final login;
 
   @override
   void initState() {
@@ -67,22 +68,38 @@ class _CataloguePageState extends State<CataloguePage> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-            backgroundColor: Colors.white,
-            title: Row(
-              children: [
-                Image.asset(
-                  'assets/images/FitSizeLogo.png',
-                  scale: 5,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                const Text(
-                  'Catalogue',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ],
-            )),
+          backgroundColor: Colors.white,
+          title: Row(
+            children: [
+              Image.asset(
+                'assets/images/FitSizeLogo.png',
+                scale: 5,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Text(
+                'Catalogue',
+                style: TextStyle(color: Colors.black),
+              ),
+            ],
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.refresh,
+                size: 30,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                final userProvider =
+                    Provider.of<UserProvider>(context, listen: false);
+                final login = userProvider.user.login;
+                fetchData(login);
+              },
+            ),
+          ],
+        ),
         body: GridView.builder(
           padding: const EdgeInsets.all(10),
           itemCount: data.length,
@@ -107,8 +124,8 @@ class _CataloguePageState extends State<CataloguePage> {
                 children: [
                   Expanded(
                     child: Image.asset(
-                      "assets/images/${id}.png",
-                      fit: BoxFit.cover,
+                      "assets/images/slipwomarks.jpg",
+                      fit: BoxFit.fill,
                     ),
                   ),
                 ],

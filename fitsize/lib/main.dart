@@ -57,7 +57,7 @@ class _LoginAppState extends State<LoginApp> {
               userId = getIdFromJson(response.body);
               final userProvider =
                   Provider.of<UserProvider>(context, listen: false);
-              userProvider.setUser(User(id: userId, login: email));
+              userProvider.setUser(User(id: userId, login: email, password: password));
               Navigator.pushReplacement<void, void>(
                 context,
                 MaterialPageRoute<void>(

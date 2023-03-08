@@ -92,7 +92,7 @@ class _DetailsClothesState extends State<DetailClothesPage> {
               child: Align(
                 alignment: Alignment.center,
                 child: Image.asset(
-                  'assets/images/tshirt.jpeg',
+                  'assets/images/slipwomarks.jpg',
                   fit: BoxFit.cover,
                 ),
               ),
