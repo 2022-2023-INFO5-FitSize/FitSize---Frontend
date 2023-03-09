@@ -4,6 +4,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:provider/provider.dart';
+import 'UserProvider.dart';
+import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,9 +18,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<CameraDescription> cameras = [];
   late CameraController cameraController;
+  late final login;
+  late final idUser;
+  late final password;
   bool _cameraInitialized = false;
   String _dropdownValue = "trousers";
+  Map<String, double> dimensions = {};
   String taskId = "";
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -59,9 +67,133 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // Cette fonction ajoute le vetement dans la base de données
+  Future<void> postClothing(Map<String, double> dims) async {
+    var url = Uri.parse('http://10.0.2.2:8000/polls/usermodel/');
+    String dimensionsFinal = jsonEncode(dims);
+    // Remplacer les guillemets doubles par des guillemets simples
+    dimensionsFinal = dimensionsFinal.replaceAll('"', "'");
+
+    // on créer l'objet data
+    var data = {
+      "name": "Calecon",
+      "dimensions": dimensionsFinal,
+      "user": idUser,
+      "clothingtype": 3
+    };
+
+    var jsonData = jsonEncode(data);
+    // requete POST
+    var response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonData,
+    );
+
+    if (response.statusCode == 201) {
+      print('Data added successfully!');
+    } else {
+      print('Failed to add data to database');
+    }
+  }
+
+  // Cette fonction appelle l'api IA et ajoute le vetement dans la base de donnée
+  void handlingData(String imagePath) async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      final bytes = (await rootBundle.load(imagePath)).buffer.asUint8List();
+      String base64string = base64.encode(bytes);
+
+      // POST
+      var response = await http.post(
+        Uri.parse("http://10.0.2.2:8000/keypoints/execScript/"),
+        body: jsonEncode(
+            <String, String>{"clothing": "trousers", "image": base64string}),
+      );
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
+      taskId = jsonData["task_id"];
+
+      // On attend que la tâche est complété
+      var statusUrl =
+          Uri.parse('http://10.0.2.2:8000/keypoints/taskStatus/$taskId');
+
+      //GET
+      var statusResponse = await http.get(statusUrl);
+      var status = json.decode(statusResponse.body)['status'];
+      while (status != 'SUCCESS') {
+        await Future.delayed(Duration(seconds: 2));
+        statusResponse = await http.get(statusUrl);
+        status = json.decode(statusResponse.body)['status'];
+      }
+
+      // On calcule les dimensions et on ajoute dans la base de donnée
+      if (statusResponse.statusCode == 200) {
+        dimensions = calculateDimensions(statusResponse
+            .body); // on stocke les dimensions de la photo dans une map
+        postClothing(dimensions);
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  // Cette fonction calcule les dimensions
+  Map<String, double> calculateDimensions(String input) {
+    final res = json.decode(input);
+    const typeClothe = 'trousers';
+    final keypoints = res['result']['keypoints'];
+
+    final dimensions = <String, double>{};
+
+    Map<String, dynamic> CONNECTIONS = {
+      'trousers': {
+        "waistband": {'waistband_left', 'waistband_right'},
+        "left_leg": {'waistband_left', 'bottom_left_out'},
+        "right_leg": {'waistband_right', 'bottom_right_out'},
+      }
+    };
+
+    for (var entry in CONNECTIONS[typeClothe].entries) {
+      List<num> tmp = <num>[];
+      for (var value in entry.value) {
+        String arrayString = keypoints?[value];
+
+        List<String> stringValues =
+            arrayString.split("[")[1].split("]")[0].split(",");
+        List<int> values =
+            stringValues.map((e) => int.parse(e.trim())).toList();
+
+        String dtype = arrayString.split("dtype=")[1].split(")")[0];
+        var npArray = NumpyArray.fromList(values, dtype: dtype);
+
+        tmp.add(npArray[0]);
+      }
+      double distance =
+          (tmp[0] - tmp[1]).abs() / res["result"]["cb_box_distance"];
+      dimensions[entry.key] = double.parse((distance).toStringAsFixed(2));
+    }
+
+    return dimensions;
+  }
+
   void sendPicture(String imagePath) async {
     try {
-      File imagefile = File(imagePath);
+      setState(() {
+        isLoading = true;
+      });
+
+      File imagefile =
+          File("/data/user/0/com.example.fitsize/cache/slipwomarks.jpg");
       Uint8List imagebytes = await imagefile.readAsBytes();
       String base64string = base64.encode(imagebytes);
 
@@ -73,9 +205,31 @@ class _HomePageState extends State<HomePage> {
         }),
       );
       Map<String, dynamic> jsonData = jsonDecode(response.body);
-      taskId = jsonData["task_id"];
+      taskId = jsonData["task_id"].toString();
+
+      // On attend que la tâche est complété
+      var statusUrl =
+          Uri.parse('http://10.0.2.2:8000/keypoints/taskStatus/$taskId');
+
+      //GET
+      var statusResponse = await http.get(statusUrl);
+      //var status = json.decode(statusResponse.body)['status'];
+      while (statusResponse.statusCode != 200) {
+        Future.delayed(const Duration(seconds: 1));
+        statusResponse = await http.get(statusUrl);
+      }
+      // On calcule les dimensions et on ajoute dans la base de donnée
+
+      //dimensions = calculateDimensions(statusResponse
+      //    .body); // on stocke les dimensions de la photo dans une map
+      //postClothing(dimensions);
     } catch (e) {
       print(e);
+      throw Exception('Failed to load');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -124,7 +278,7 @@ class _HomePageState extends State<HomePage> {
                           print("Picture saved to ${file.path}");
                           sendPicture(
                               file.path); // Envoie la requete au serveur
-                          getDataFromTaskId(taskId); // requete get pour recevoir les données de la tache
+                          // requete get pour recevoir les données de la tache
                         }
                       }
                     });
@@ -183,10 +337,35 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        child: const Center(
-          child: Icon(Icons.camera_alt_outlined),
-        ),
+        child: isLoading
+            ? SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.indigo,
+                ),
+              )
+            : const Center(
+                child: Icon(Icons.camera_alt_outlined),
+              ),
       ),
     );
+  }
+}
+
+class NumpyArray {
+  List<num> data;
+  String dtype;
+
+  NumpyArray({required this.data, required this.dtype});
+
+  factory NumpyArray.fromList(List<int> list, {required String dtype}) {
+    var data = list.map((e) => e.toDouble()).toList();
+    return NumpyArray(data: data, dtype: dtype);
+  }
+
+  num operator [](int index) {
+    return data[index];
   }
 }
