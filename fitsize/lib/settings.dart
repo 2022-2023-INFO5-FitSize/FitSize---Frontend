@@ -64,18 +64,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   fontSize: 20,
                 ),
               ),
-              const SizedBox(
-                height: 300,
-              ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.indigo),
                   ),
-                  onPressed: () {
-
-                  },
+                  onPressed: () {},
                   child: const Text('Deconnexion'),
                 ),
               )

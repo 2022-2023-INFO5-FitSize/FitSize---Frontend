@@ -36,7 +36,7 @@ class _MainAppState extends State<MainApp> {
             switch (index) {
               case 0:
                 return CupertinoTabView(builder: (context) {
-                  return const CupertinoPageScaffold(child: HomePageTest());
+                  return const CupertinoPageScaffold(child: HomePage());
                 });
               case 1:
                 return CupertinoTabView(builder: (context) {
