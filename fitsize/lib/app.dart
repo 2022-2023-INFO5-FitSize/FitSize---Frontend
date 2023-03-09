@@ -30,6 +30,7 @@ class _MainAppState extends State<MainApp> {
                 icon: Icon(Icons.settings),
               ),
             ],
+            activeColor: Colors.indigo,
           ),
           tabBuilder: (context, index) {
             switch (index) {

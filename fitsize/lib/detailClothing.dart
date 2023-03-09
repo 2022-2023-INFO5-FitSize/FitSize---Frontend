@@ -48,7 +48,7 @@ class _DetailsClothesState extends State<DetailClothesPage> {
 
   fetchData(idClothes) async {
     final response = await http
-        .get(Uri.parse('http://10.0.2.2:8000/polls/usermodel/$idClothes'));
+        .get(Uri.parse('http://127.0.0.1:8000/polls/usermodel/$idClothes'));
 
     if (response.statusCode == 200) {
       parseJson(response.body);
@@ -65,7 +65,7 @@ class _DetailsClothesState extends State<DetailClothesPage> {
 
   deleteClothes() async {
     final response = await http.delete(
-      Uri.parse('http://10.0.2.2:8000/polls/usermodel/${widget.idClothes}/'),
+      Uri.parse('http://127.0.0.1:8000/polls/usermodel/${widget.idClothes}/'),
     );
 
     if (response.statusCode == 204) {

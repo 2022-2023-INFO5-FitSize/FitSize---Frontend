@@ -23,6 +23,7 @@ class _HomePageTestState extends State<HomePageTest> {
   late final login;
   late final idUser;
   late final password;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -41,12 +42,15 @@ class _HomePageTestState extends State<HomePageTest> {
   // Cette fonction appelle l'api IA et ajoute le vetement dans la base de donnée
   void handlingData(String imagePath) async {
     try {
+      setState(() {
+        isLoading = true;
+      });
       final bytes = (await rootBundle.load(imagePath)).buffer.asUint8List();
       String base64string = base64.encode(bytes);
 
       // POST
       var response = await http.post(
-        Uri.parse("http://10.0.2.2:8000/keypoints/execScript/"),
+        Uri.parse("http://127.0.0.1:8000/keypoints/execScript/"),
         body: jsonEncode(
             <String, String>{"clothing": "trousers", "image": base64string}),
       );
@@ -55,7 +59,7 @@ class _HomePageTestState extends State<HomePageTest> {
 
       // On attend que la tâche est complété
       var statusUrl =
-          Uri.parse('http://10.0.2.2:8000/keypoints/taskStatus/$taskId');
+          Uri.parse('http://127.0.0.1:8000/keypoints/taskStatus/$taskId');
 
       //GET
       var statusResponse = await http.get(statusUrl);
@@ -76,6 +80,10 @@ class _HomePageTestState extends State<HomePageTest> {
       }
     } catch (e) {
       print(e);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -120,7 +128,7 @@ class _HomePageTestState extends State<HomePageTest> {
 
   // Cette fonction ajoute le vetement dans la base de données
   Future<void> postClothing(Map<String, double> dims) async {
-    var url = Uri.parse('http://10.0.2.2:8000/polls/usermodel/');
+    var url = Uri.parse('http://127.0.0.1:8000/polls/usermodel/');
     String dimensionsFinal = jsonEncode(dims);
     // Remplacer les guillemets doubles par des guillemets simples
     dimensionsFinal = dimensionsFinal.replaceAll('"', "'");
@@ -155,29 +163,42 @@ class _HomePageTestState extends State<HomePageTest> {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
-              backgroundColor: Colors.white,
-              title: Row(
-                children: [
-                  Image.asset(
-                    'assets/images/FitSizeLogo.png',
-                    scale: 5,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Text(
-                    'Test Vetement Photo',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ],
-              )),
+            backgroundColor: Colors.white,
+            title: Row(
+              children: [
+                Image.asset(
+                  'assets/images/FitSizeLogo.png',
+                  scale: 5,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text(
+                  'Accueil',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            ),
+          ),
           body: Column(
             children: [
               Image.asset(
                 'assets/images/slipwomarks.jpg',
                 fit: BoxFit.cover,
               ),
-              const SizedBox(height: 70),
+              const SizedBox(height: 50),
+              Visibility(
+                visible: isLoading, // visible only when isLoading is true
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.indigo,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
