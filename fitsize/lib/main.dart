@@ -1,11 +1,11 @@
 import 'package:fitsize/UserProvider.dart';
 import 'package:fitsize/app.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'User.dart';
 import 'dart:convert';
+import 'global.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -50,7 +50,7 @@ class _LoginAppState extends State<LoginApp> {
         formKey.currentState!.save();
         try {
           final response = await http.get(
-            Uri.parse("http://10.0.2.2:8000/polls/user/login/$email"),
+            Uri.parse("http://$ipAdress:8000/polls/user/login/$email"),
           );
           if (response.statusCode == 200) {
             if (password == getPasswordFromJson(response.body)) {
