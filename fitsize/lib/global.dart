@@ -1,0 +1,1 @@
+String ipAdress = "192.168.1.12"; // on stocke l'adresse ip dans une variable globale

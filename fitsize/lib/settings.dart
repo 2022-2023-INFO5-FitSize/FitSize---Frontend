@@ -34,20 +34,36 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ],
             )),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
+        body: Center(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
+              const SizedBox(
+                height: 50,
+              ),
+              const CircleAvatar(
+                radius: 60,
+                backgroundImage:
+                    NetworkImage('https://picsum.photos/id/58/1280/853.jpg'),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               Text(
-                "Bonjour $login",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                "$login",
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {},
-                child: Text("Se déconnecter"),
+              const SizedBox(
+                height: 50,
               ),
+              const Text(
+                "Bienvenue sur l'application FitSize !",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              )
             ],
           ),
         ),

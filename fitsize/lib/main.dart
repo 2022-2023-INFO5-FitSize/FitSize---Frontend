@@ -1,19 +1,18 @@
 import 'package:fitsize/UserProvider.dart';
 import 'package:fitsize/app.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'User.dart';
 import 'dart:convert';
+import 'global.dart';
 
 void main() {
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
-    child: MaterialApp(
-      home: LoginApp(),
-    )
-  ));
+      providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
+      child: MaterialApp(
+        home: LoginApp(),
+      )));
 }
 
 class LoginApp extends StatefulWidget {
@@ -50,14 +49,15 @@ class _LoginAppState extends State<LoginApp> {
         formKey.currentState!.save();
         try {
           final response = await http.get(
-            Uri.parse("http://10.0.2.2:8000/polls/user/login/$email"),
+            Uri.parse("http://$ipAdress:8000/polls/user/login/$email"),
           );
           if (response.statusCode == 200) {
             if (password == getPasswordFromJson(response.body)) {
               userId = getIdFromJson(response.body);
               final userProvider =
                   Provider.of<UserProvider>(context, listen: false);
-              userProvider.setUser(User(id: userId, login: email));
+              userProvider
+                  .setUser(User(id: userId, login: email, password: password));
               Navigator.pushReplacement<void, void>(
                 context,
                 MaterialPageRoute<void>(
@@ -69,7 +69,7 @@ class _LoginAppState extends State<LoginApp> {
             }
           }
         } catch (e) {
-          // error
+          print(e);
         }
       }
     }

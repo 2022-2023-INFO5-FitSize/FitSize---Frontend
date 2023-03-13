@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'UserProvider.dart';
 import 'detailClothing.dart';
+import 'global.dart';
 
 class CataloguePage extends StatefulWidget {
   const CataloguePage({super.key});
@@ -17,6 +18,7 @@ class _CataloguePageState extends State<CataloguePage> {
   late PageController _pageController;
   int currentPage = 0;
   Map<int, String> data = {};
+  late final login;
 
   @override
   void initState() {
@@ -44,7 +46,7 @@ class _CataloguePageState extends State<CataloguePage> {
   // Fonction qui récupère les données
   Future<void> fetchData(String login) async {
     final response = await http
-        .get(Uri.parse('http://10.0.2.2:8000/polls/usermodel/login/$login'));
+        .get(Uri.parse('http://$ipAdress:8000/polls/usermodel/login/$login'));
 
     if (response.statusCode == 200) {
       final data = parseJsonToMap(response.body);
@@ -67,24 +69,40 @@ class _CataloguePageState extends State<CataloguePage> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-            backgroundColor: Colors.white,
-            title: Row(
-              children: [
-                Image.asset(
-                  'assets/images/FitSizeLogo.png',
-                  scale: 5,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                const Text(
-                  'Catalogue',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ],
-            )),
+          backgroundColor: Colors.white,
+          title: Row(
+            children: [
+              Image.asset(
+                'assets/images/FitSizeLogo.png',
+                scale: 5,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Text(
+                'Catalogue',
+                style: TextStyle(color: Colors.black),
+              ),
+            ],
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.refresh,
+                size: 30,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                final userProvider =
+                    Provider.of<UserProvider>(context, listen: false);
+                final login = userProvider.user.login;
+                fetchData(login);
+              },
+            ),
+          ],
+        ),
         body: GridView.builder(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(20),
           itemCount: data.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
@@ -107,8 +125,7 @@ class _CataloguePageState extends State<CataloguePage> {
                 children: [
                   Expanded(
                     child: Image.asset(
-                      "assets/images/${id}.png",
-                      fit: BoxFit.cover,
+                      "assets/images/slipwomarks.jpg",
                     ),
                   ),
                 ],
