@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import 'User.dart';
+import 'user.dart';
 
 class UserProvider with ChangeNotifier {
   late User _user;

@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:provider/provider.dart';
-import 'UserProvider.dart';
+import 'userprovider.dart';
 import 'package:flutter/services.dart';
 
 import 'global.dart';
@@ -172,10 +172,50 @@ class _HomePageState extends State<HomePage> {
     final dimensions = <String, double>{};
 
     Map<String, dynamic> CONNECTIONS = {
+      'blouse': {
+        "neck": {'neckline_left', 'neckline_right'},
+        "shoulders": {'shoulder_left', 'shoulder_right'},
+        "left_sleeve": {'shoulder_left', 'cuff_left_out'},
+        "right_sleeve": {'shoulder_right', 'cuff_right_out'},
+        "left_cuff": {'cuff_left_in', 'cuff_left_out'},
+        "right_cuff": {'cuff_right_in', 'cuff_right_out'},
+        "chest": {'armpit_left', 'armpit_right'},
+        "waist": {'top_hem_left', 'top_hem_right'},
+        "length_left": {'shoulder_left', 'top_hem_left'},
+        "length_right": {'shoulder_right', 'top_hem_right'},
+      },
+      'outwear': {
+        "neck": {'neckline_left', 'neckline_right'},
+        "shoulders": {'shoulder_left', 'shoulder_right'},
+        "left_sleeve": {'shoulder_left', 'cuff_left_out'},
+        "right_sleeve": {'shoulder_right', 'cuff_right_out'},
+        "left_cuff": {'cuff_left_in', 'cuff_left_out'},
+        "right_cuff": {'cuff_right_in', 'cuff_right_out'},
+        "chest": {'armpit_left', 'armpit_right'},
+        "waist": {'waistline_left', 'waistline_right'},
+        "length_left": {'shoulder_left', 'waistline_left'},
+        "length_right": {'shoulder_right', 'waistline_right'},
+      },
       'trousers': {
         "waistband": {'waistband_left', 'waistband_right'},
         "left_leg": {'waistband_left', 'bottom_left_out'},
         "right_leg": {'waistband_right', 'bottom_right_out'},
+      },
+      'skirt': {
+        "waistband": {'waistband_left', 'waistband_right'},
+        "hemline": {'hemline_left', 'hemline_right'},
+      },
+      'dress': {
+        "neck": {'neckline_left', 'neckline_right'},
+        "shoulders": {'shoulder_left', 'shoulder_right'},
+        "left_sleeve": {'shoulder_left', 'cuff_left_out'},
+        "right_sleeve": {'shoulder_right', 'cuff_right_out'},
+        "left_cuff": {'cuff_left_in', 'cuff_left_out'},
+        "right_cuff": {'cuff_right_in', 'cuff_right_out'},
+        "chest": {'armpit_left', 'armpit_right'},
+        "waist": {'waistline_left', 'waistline_right'},
+        "length_left": {'shoulder_left', 'hemline_left'},
+        "length_right": {'shoulder_right', 'hemline_right'},
       }
     };
 
@@ -222,6 +262,22 @@ class _HomePageState extends State<HomePage> {
                   'Accueil',
                   style: TextStyle(color: Colors.black),
                 ),
+                const Expanded(
+                  child: SizedBox(),
+                ),
+                DropdownButton(
+                  items: const [
+                    DropdownMenuItem(value: "blouse", child: Text("blouse")),
+                    DropdownMenuItem(value: "dress", child: Text("dress")),
+                    DropdownMenuItem(value: "outwear", child: Text("outwear")),
+                    DropdownMenuItem(
+                        value: "trousers", child: Text("trousers")),
+                    DropdownMenuItem(value: "skirt", child: Text("skirt")),
+                  ],
+                  value: _dropdownValue,
+                  onChanged: dropdownCallback,
+                  iconEnabledColor: Colors.black,
+                ),
               ],
             ),
           ),
@@ -239,22 +295,6 @@ class _HomePageState extends State<HomePage> {
                   });
                 },
                 child: button(Icons.camera, Alignment.bottomCenter),
-              ),
-              Container(
-                alignment: Alignment.topRight,
-                child: DropdownButton(
-                  items: const [
-                    DropdownMenuItem(value: "blouse", child: Text("blouse")),
-                    DropdownMenuItem(value: "dress", child: Text("dress")),
-                    DropdownMenuItem(value: "outwear", child: Text("outwear")),
-                    DropdownMenuItem(
-                        value: "trousers", child: Text("trousers")),
-                    DropdownMenuItem(value: "skirt", child: Text("skirt")),
-                  ],
-                  value: _dropdownValue,
-                  onChanged: dropdownCallback,
-                  iconEnabledColor: Colors.white,
-                ),
               ),
             ],
           ),
@@ -274,8 +314,8 @@ class _HomePageState extends State<HomePage> {
           left: 0,
           bottom: 130,
         ),
-        height: 50,
-        width: 50,
+        height: 70,
+        width: 70,
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.white,
@@ -292,13 +332,11 @@ class _HomePageState extends State<HomePage> {
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
-                  strokeWidth: 2,
+                  strokeWidth: 3,
                   color: Colors.indigo,
                 ),
               )
-            : const Center(
-                child: Icon(Icons.camera_alt_outlined),
-              ),
+            : const Center(),
       ),
     );
   }

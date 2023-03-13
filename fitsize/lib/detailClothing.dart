@@ -92,7 +92,7 @@ class _DetailsClothesState extends State<DetailClothesPage> {
         title: Row(
           children: [
             Text(
-              'Détail de $name',
+              'Détail',
               style: TextStyle(color: Colors.black),
             ),
           ],
