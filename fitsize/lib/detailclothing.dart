@@ -90,7 +90,7 @@ class _DetailsClothesState extends State<DetailClothesPage> {
         ),
         backgroundColor: Colors.white,
         title: Row(
-          children: [
+          children: const [
             Text(
               'Détail',
               style: TextStyle(color: Colors.black),
@@ -99,7 +99,7 @@ class _DetailsClothesState extends State<DetailClothesPage> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete, size: 30, color: Colors.black),
+            icon: const Icon(Icons.delete, size: 30, color: Colors.black),
             onPressed: () => deleteClothes(),
           ),
         ],
@@ -118,7 +118,7 @@ class _DetailsClothesState extends State<DetailClothesPage> {
               ),
             ),
             isLoading // Vérifier si les données ont été chargées avec succès
-                ? Text(
+                ? const Text(
                     '',
                     style: TextStyle(fontSize: 20),
                   )
@@ -131,7 +131,7 @@ class _DetailsClothesState extends State<DetailClothesPage> {
                         return ListTile(
                           title: Text(
                             key,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           trailing: Text(value.toString()),
                         );

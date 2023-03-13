@@ -49,7 +49,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 height: 20,
               ),
               Text(
-                "$login",
+                login,
                 style: const TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,

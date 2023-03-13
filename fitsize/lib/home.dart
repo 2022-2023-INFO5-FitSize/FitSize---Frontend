@@ -2,8 +2,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:provider/provider.dart';
 import 'userprovider.dart';
 import 'package:flutter/services.dart';
@@ -21,9 +19,9 @@ class _HomePageState extends State<HomePage> {
   List<CameraDescription> cameras = [];
   late Future<CameraController> cameraControllerFuture;
   late CameraController _cameraController;
-  late final login;
-  late final idUser;
-  late final password;
+  late String login = "";
+  late int idUser = -1;
+  late String password = "";
   bool _cameraInitialized = false;
   String _dropdownValue = "trousers";
   Map<String, double> dimensions = {};
@@ -142,7 +140,7 @@ class _HomePageState extends State<HomePage> {
       var statusResponse = await http.get(statusUrl);
       var status = json.decode(statusResponse.body)['status'];
       while (status != 'SUCCESS') {
-        await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 2));
         statusResponse = await http.get(statusUrl);
         status = json.decode(statusResponse.body)['status'];
       }
@@ -171,7 +169,7 @@ class _HomePageState extends State<HomePage> {
     final keypoints = res['result']['keypoints'];
     final dimensions = <String, double>{};
 
-    Map<String, dynamic> CONNECTIONS = {
+    Map<String, dynamic> connections = {
       'blouse': {
         "neck": {'neckline_left', 'neckline_right'},
         "shoulders": {'shoulder_left', 'shoulder_right'},
@@ -219,7 +217,7 @@ class _HomePageState extends State<HomePage> {
       }
     };
 
-    for (var entry in CONNECTIONS[typeClothe].entries) {
+    for (var entry in connections[typeClothe].entries) {
       List<num> tmp = <num>[];
       for (var value in entry.value) {
         String arrayString = keypoints?[value];

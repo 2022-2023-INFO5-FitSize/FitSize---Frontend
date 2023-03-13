@@ -10,7 +10,7 @@ import 'global.dart';
 void main() {
   runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
-      child: MaterialApp(
+      child: const MaterialApp(
         home: LoginApp(),
       )));
 }
