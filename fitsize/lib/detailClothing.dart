@@ -48,7 +48,7 @@ class _DetailsClothesState extends State<DetailClothesPage> {
 
   fetchData(idClothes) async {
     final response = await http
-        .get(Uri.parse('http://10.0.2.2:8000/polls/usermodel/$idClothes'));
+        .get(Uri.parse('http://127.0.0.1:8000/polls/usermodel/$idClothes'));
 
     if (response.statusCode == 200) {
       parseJson(response.body);
@@ -60,6 +60,18 @@ class _DetailsClothesState extends State<DetailClothesPage> {
       });
     } else {
       throw Exception('Failed to load');
+    }
+  }
+
+  deleteClothes() async {
+    final response = await http.delete(
+      Uri.parse('http://127.0.0.1:8000/polls/usermodel/${widget.idClothes}/'),
+    );
+
+    if (response.statusCode == 204) {
+      Navigator.pop(context);
+    } else {
+      throw Exception('Failed to delete clothes.');
     }
   }
 
@@ -83,6 +95,12 @@ class _DetailsClothesState extends State<DetailClothesPage> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete, size: 30, color: Colors.black),
+            onPressed: () => deleteClothes(),
+          ),
+        ],
       ),
       body: Center(
         child: Column(
@@ -92,7 +110,7 @@ class _DetailsClothesState extends State<DetailClothesPage> {
               child: Align(
                 alignment: Alignment.center,
                 child: Image.asset(
-                  'assets/images/tshirt.jpeg',
+                  'assets/images/slipwomarks.jpg',
                   fit: BoxFit.cover,
                 ),
               ),
