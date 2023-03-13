@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> {
     final res = json.decode(input);
     const typeClothe = 'trousers';
     final keypoints = res['result']['keypoints'];
-
+    print("coucou");
     final dimensions = <String, double>{};
 
     Map<String, dynamic> CONNECTIONS = {
@@ -182,7 +182,8 @@ class _HomePageState extends State<HomePage> {
           (tmp[0] - tmp[1]).abs() / res["result"]["cb_box_distance"];
       dimensions[entry.key] = double.parse((distance).toStringAsFixed(2));
     }
-
+    print("YOOOOOOOOOOO");
+    print(dimensions);
     return dimensions;
   }
 
@@ -205,7 +206,7 @@ class _HomePageState extends State<HomePage> {
         }),
       );
       Map<String, dynamic> jsonData = jsonDecode(response.body);
-      taskId = jsonData["task_id"].toString();
+      taskId = jsonData["task_id"];
 
       // On attend que la tâche est complété
       var statusUrl =
@@ -215,13 +216,14 @@ class _HomePageState extends State<HomePage> {
       var statusResponse = await http.get(statusUrl);
       //var status = json.decode(statusResponse.body)['status'];
       while (statusResponse.statusCode != 200) {
-        Future.delayed(const Duration(seconds: 1));
+        sleep(const Duration(seconds: 2));
+        print("ATTENTE");
         statusResponse = await http.get(statusUrl);
       }
       // On calcule les dimensions et on ajoute dans la base de donnée
-
-      //dimensions = calculateDimensions(statusResponse
-      //    .body); // on stocke les dimensions de la photo dans une map
+      print("loooooooooooool");
+      //dimensions = calculateDimensions(statusResponse.body);
+      // on stocke les dimensions de la photo dans une map
       //postClothing(dimensions);
     } catch (e) {
       print(e);
@@ -230,17 +232,6 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         isLoading = false;
       });
-    }
-  }
-
-  Future<void> getDataFromTaskId(String id) async {
-    final response = await http
-        .get(Uri.parse('http://10.0.2.2:8000/keypoints/taskStatus/$id'));
-
-    if (response.statusCode == 200) {
-      print(response.body);
-    } else {
-      throw Exception('Failed to load');
     }
   }
 
