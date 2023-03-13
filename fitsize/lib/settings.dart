@@ -58,20 +58,10 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(
                 height: 50,
               ),
-              Text(
+              const Text(
                 "Bienvenue sur l'application FitSize !",
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.indigo),
-                  ),
-                  onPressed: () {},
-                  child: const Text('Deconnexion'),
                 ),
               )
             ],

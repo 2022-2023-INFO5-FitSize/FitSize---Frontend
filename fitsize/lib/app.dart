@@ -1,6 +1,5 @@
 import 'package:fitsize/Catalogue.dart';
 import 'package:fitsize/home.dart';
-import 'package:fitsize/homeTest.dart';
 import 'package:fitsize/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';

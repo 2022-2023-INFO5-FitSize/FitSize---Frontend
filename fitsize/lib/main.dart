@@ -69,7 +69,7 @@ class _LoginAppState extends State<LoginApp> {
             }
           }
         } catch (e) {
-          // error
+          print(e);
         }
       }
     }

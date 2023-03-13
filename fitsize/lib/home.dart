@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'UserProvider.dart';
 import 'package:flutter/services.dart';
 
+import 'global.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -17,7 +19,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<CameraDescription> cameras = [];
-  late CameraController cameraController;
+  late Future<CameraController> cameraControllerFuture;
+  late CameraController _cameraController;
   late final login;
   late final idUser;
   late final password;
@@ -29,18 +32,27 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    startCamera();
     super.initState();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    login = userProvider.user.login;
+    idUser = userProvider.user.id;
+    password = userProvider.user.password;
+    initCamera().then((cameraController) {
+      setState(() {
+        _cameraController = cameraController;
+        _cameraInitialized = true;
+      });
+    }).catchError((e) {
+      print(e);
+    });
   }
 
-  void startCamera() async {
+  Future<CameraController> initCamera() async {
     final cameras = await availableCameras();
-
-    cameraController = CameraController(
+    final cameraController = CameraController(
       cameras[0],
-      ResolutionPreset.medium,
+      ResolutionPreset.max,
     );
-
     await cameraController.initialize().then((value) {
       if (!mounted) {
         return;
@@ -51,11 +63,15 @@ class _HomePageState extends State<HomePage> {
     }).catchError((e) {
       print(e);
     });
+
+    return cameraController;
   }
 
   @override
   void dispose() {
-    cameraController.dispose();
+    cameraControllerFuture.then((cameraController) {
+      cameraController.dispose();
+    });
     super.dispose();
   }
 
@@ -68,18 +84,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Cette fonction ajoute le vetement dans la base de données
-  Future<void> postClothing(Map<String, double> dims) async {
-    var url = Uri.parse('http://10.0.2.2:8000/polls/usermodel/');
+  Future<void> postClothing(Map<String, double> dims, String img) async {
+    var url = Uri.parse('http://$ipAdress:8000/polls/usermodel/');
     String dimensionsFinal = jsonEncode(dims);
     // Remplacer les guillemets doubles par des guillemets simples
     dimensionsFinal = dimensionsFinal.replaceAll('"', "'");
 
     // on créer l'objet data
     var data = {
-      "name": "Calecon",
+      "name": "",
       "dimensions": dimensionsFinal,
       "user": idUser,
-      "clothingtype": 3
+      "clothingtype": 3,
+      "images": img
     };
 
     var jsonData = jsonEncode(data);
@@ -110,7 +127,7 @@ class _HomePageState extends State<HomePage> {
 
       // POST
       var response = await http.post(
-        Uri.parse("http://10.0.2.2:8000/keypoints/execScript/"),
+        Uri.parse("http://$ipAdress:8000/keypoints/execScript/"),
         body: jsonEncode(
             <String, String>{"clothing": "trousers", "image": base64string}),
       );
@@ -119,7 +136,7 @@ class _HomePageState extends State<HomePage> {
 
       // On attend que la tâche est complété
       var statusUrl =
-          Uri.parse('http://10.0.2.2:8000/keypoints/taskStatus/$taskId');
+          Uri.parse('http://$ipAdress:8000/keypoints/taskStatus/$taskId');
 
       //GET
       var statusResponse = await http.get(statusUrl);
@@ -134,7 +151,7 @@ class _HomePageState extends State<HomePage> {
       if (statusResponse.statusCode == 200) {
         dimensions = calculateDimensions(statusResponse
             .body); // on stocke les dimensions de la photo dans une map
-        postClothing(dimensions);
+        postClothing(dimensions, imagePath);
       } else {
         throw Exception('Failed to load');
       }
@@ -147,12 +164,11 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Cette fonction calcule les dimensions
+  // Cette fonction calcule les dimensions à partir d'un string contenant les keypoints
   Map<String, double> calculateDimensions(String input) {
     final res = json.decode(input);
     const typeClothe = 'trousers';
     final keypoints = res['result']['keypoints'];
-    print("coucou");
     final dimensions = <String, double>{};
 
     Map<String, dynamic> CONNECTIONS = {
@@ -182,123 +198,65 @@ class _HomePageState extends State<HomePage> {
           (tmp[0] - tmp[1]).abs() / res["result"]["cb_box_distance"];
       dimensions[entry.key] = double.parse((distance).toStringAsFixed(2));
     }
-    print("YOOOOOOOOOOO");
-    print(dimensions);
+
     return dimensions;
-  }
-
-  void sendPicture(String imagePath) async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-
-      File imagefile =
-          File("/data/user/0/com.example.fitsize/cache/slipwomarks.jpg");
-      Uint8List imagebytes = await imagefile.readAsBytes();
-      String base64string = base64.encode(imagebytes);
-
-      var response = await http.post(
-        Uri.parse("http://10.0.2.2:8000/keypoints/execScript/"),
-        body: jsonEncode(<String, String>{
-          "clothing": _dropdownValue,
-          "image": base64string
-        }),
-      );
-      Map<String, dynamic> jsonData = jsonDecode(response.body);
-      taskId = jsonData["task_id"];
-
-      // On attend que la tâche est complété
-      var statusUrl =
-          Uri.parse('http://10.0.2.2:8000/keypoints/taskStatus/$taskId');
-
-      //GET
-      var statusResponse = await http.get(statusUrl);
-      //var status = json.decode(statusResponse.body)['status'];
-      while (statusResponse.statusCode != 200) {
-        sleep(const Duration(seconds: 2));
-        print("ATTENTE");
-        statusResponse = await http.get(statusUrl);
-      }
-      // On calcule les dimensions et on ajoute dans la base de donnée
-      print("loooooooooooool");
-      //dimensions = calculateDimensions(statusResponse.body);
-      // on stocke les dimensions de la photo dans une map
-      //postClothing(dimensions);
-    } catch (e) {
-      print(e);
-      throw Exception('Failed to load');
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (cameraController.value.isInitialized && _cameraInitialized == true) {
+    if (_cameraInitialized) {
       return MaterialApp(
-        home: SafeArea(
-          child: Scaffold(
-            appBar: AppBar(
-                backgroundColor: Colors.white,
-                title: Row(
-                  children: [
-                    Image.asset(
-                      'assets/images/FitSizeLogo.png',
-                      scale: 5,
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const Text(
-                      'Accueil',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ],
-                )),
-            body: Stack(
+        home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Row(
               children: [
-                CameraPreview(cameraController),
-                GestureDetector(
-                  onTap: () {
-                    cameraController.takePicture().then((XFile? file) {
-                      if (mounted) {
-                        if (file != null) {
-                          print("Picture saved to ${file.path}");
-                          sendPicture(
-                              file.path); // Envoie la requete au serveur
-                          // requete get pour recevoir les données de la tache
-                        }
-                      }
-                    });
-                  },
-                  child: button(Icons.camera, Alignment.bottomCenter),
+                Image.asset(
+                  'assets/images/FitSizeLogo.png',
+                  scale: 5,
                 ),
-                Container(
-                  alignment: Alignment.bottomCenter,
-                  margin: const EdgeInsets.only(
-                    left: 0,
-                    bottom: 70,
-                  ),
-                  child: DropdownButton(
-                    items: const [
-                      DropdownMenuItem(child: Text("blouse"), value: "blouse"),
-                      DropdownMenuItem(child: Text("dress"), value: "dress"),
-                      DropdownMenuItem(
-                          child: Text("outwear"), value: "outwear"),
-                      DropdownMenuItem(
-                          child: Text("trousers"), value: "trousers"),
-                      DropdownMenuItem(child: Text("skirt"), value: "skirt"),
-                    ],
-                    value: _dropdownValue,
-                    onChanged: dropdownCallback,
-                    iconEnabledColor: Colors.blue,
-                  ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text(
+                  'Accueil',
+                  style: TextStyle(color: Colors.black),
                 ),
               ],
             ),
+          ),
+          body: Stack(
+            children: [
+              CameraPreview(_cameraController),
+              GestureDetector(
+                onTap: () {
+                  _cameraController.takePicture().then((XFile? file) {
+                    if (mounted) {
+                      if (file != null) {
+                        handlingData(file.path);
+                      }
+                    }
+                  });
+                },
+                child: button(Icons.camera, Alignment.bottomCenter),
+              ),
+              Container(
+                alignment: Alignment.topRight,
+                child: DropdownButton(
+                  items: const [
+                    DropdownMenuItem(value: "blouse", child: Text("blouse")),
+                    DropdownMenuItem(value: "dress", child: Text("dress")),
+                    DropdownMenuItem(value: "outwear", child: Text("outwear")),
+                    DropdownMenuItem(
+                        value: "trousers", child: Text("trousers")),
+                    DropdownMenuItem(value: "skirt", child: Text("skirt")),
+                  ],
+                  value: _dropdownValue,
+                  onChanged: dropdownCallback,
+                  iconEnabledColor: Colors.white,
+                ),
+              ),
+            ],
           ),
         ),
       );
@@ -307,6 +265,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // cette fonction dessine l'icone capture photo
   Widget button(IconData icon, Alignment alignement) {
     return Align(
       alignment: alignement,
@@ -329,7 +288,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         child: isLoading
-            ? SizedBox(
+            ? const SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(

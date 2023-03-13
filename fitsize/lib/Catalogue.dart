@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'UserProvider.dart';
 import 'detailClothing.dart';
+import 'global.dart';
 
 class CataloguePage extends StatefulWidget {
   const CataloguePage({super.key});
@@ -45,7 +46,7 @@ class _CataloguePageState extends State<CataloguePage> {
   // Fonction qui récupère les données
   Future<void> fetchData(String login) async {
     final response = await http
-        .get(Uri.parse('http://127.0.0.1:8000/polls/usermodel/login/$login'));
+        .get(Uri.parse('http://$ipAdress:8000/polls/usermodel/login/$login'));
 
     if (response.statusCode == 200) {
       final data = parseJsonToMap(response.body);
