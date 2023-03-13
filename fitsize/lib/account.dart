@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'UserProvider.dart';
+import 'userprovider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -29,7 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   width: 10,
                 ),
                 const Text(
-                  'Paramètres',
+                  'Compte',
                   style: TextStyle(color: Colors.black),
                 ),
               ],
@@ -43,13 +43,13 @@ class _SettingsPageState extends State<SettingsPage> {
               const CircleAvatar(
                 radius: 60,
                 backgroundImage:
-                    NetworkImage('https://picsum.photos/id/58/1280/853.jpg'),
+                    NetworkImage('https://picsum.photos/id/237/200/300'),
               ),
               const SizedBox(
                 height: 20,
               ),
               Text(
-                "$login",
+                login,
                 style: const TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,

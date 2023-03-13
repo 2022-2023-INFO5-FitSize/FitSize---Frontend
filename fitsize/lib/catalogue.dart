@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import 'UserProvider.dart';
-import 'detailClothing.dart';
+import 'userprovider.dart';
+import 'detailclothing.dart';
 import 'global.dart';
 
 class CataloguePage extends StatefulWidget {
@@ -18,7 +18,7 @@ class _CataloguePageState extends State<CataloguePage> {
   late PageController _pageController;
   int currentPage = 0;
   Map<int, String> data = {};
-  late final login;
+  late final login = "";
 
   @override
   void initState() {

@@ -1,16 +1,16 @@
-import 'package:fitsize/UserProvider.dart';
+import 'package:fitsize/userprovider.dart';
 import 'package:fitsize/app.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import 'User.dart';
+import 'user.dart';
 import 'dart:convert';
 import 'global.dart';
 
 void main() {
   runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
-      child: MaterialApp(
+      child: const MaterialApp(
         home: LoginApp(),
       )));
 }
