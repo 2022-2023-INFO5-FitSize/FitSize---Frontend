@@ -19,6 +19,7 @@ class _CataloguePageState extends State<CataloguePage> {
   int currentPage = 0;
   Map<int, String> data = {};
   late final login = "";
+  List<String> imgUrlList = [];
 
   @override
   void initState() {
@@ -33,12 +34,17 @@ class _CataloguePageState extends State<CataloguePage> {
   Map<int, String> parseJsonToMap(String jsonString) {
     List<dynamic> data = json.decode(jsonString);
     Map<int, String> result = {};
+    List<String> imgList = [];
 
     for (dynamic item in data) {
       int id = item['id'];
       String name = item['name'];
+      String imgUrl = item['image'];
       result[id] = name;
+      imgList.add(imgUrl);
     }
+
+    imgUrlList = imgList;
 
     return result;
   }
@@ -125,7 +131,7 @@ class _CataloguePageState extends State<CataloguePage> {
                 children: [
                   Expanded(
                     child: Image.asset(
-                      "assets/images/slipwomarks.jpg",
+                      imgUrlList[index],
                     ),
                   ),
                 ],

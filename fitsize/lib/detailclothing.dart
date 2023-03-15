@@ -19,6 +19,8 @@ class _DetailsClothesState extends State<DetailClothesPage> {
   late String dimensions = '';
   late String typeOfClothing = '';
   late double neckline = 0.0;
+  late int idVetement;
+  late String img = '';
   bool isLoading = true;
   Map<String, double> dimensionsMap = {};
 
@@ -33,6 +35,8 @@ class _DetailsClothesState extends State<DetailClothesPage> {
     name = jsonData["name"];
     dimensions = jsonData["dimensions"];
     typeOfClothing = jsonData["clothingtype"]["label"];
+    idVetement = jsonData["id"];
+    img = jsonData["image"];
   }
 
   Map<String, double> parseDimensions(String str) {
@@ -111,7 +115,7 @@ class _DetailsClothesState extends State<DetailClothesPage> {
               child: Align(
                 alignment: Alignment.center,
                 child: Image.asset(
-                  'assets/images/slipwomarks.jpg',
+                  img,
                   fit: BoxFit.cover,
                 ),
               ),

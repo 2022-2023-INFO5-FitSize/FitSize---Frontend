@@ -2,6 +2,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:provider/provider.dart';
 import 'userprovider.dart';
 import 'package:flutter/services.dart';
@@ -19,9 +21,9 @@ class _HomePageState extends State<HomePage> {
   List<CameraDescription> cameras = [];
   late Future<CameraController> cameraControllerFuture;
   late CameraController _cameraController;
-  late String login = "";
-  late int idUser = -1;
-  late String password = "";
+  late final login;
+  late final idUser;
+  late final password;
   bool _cameraInitialized = false;
   String _dropdownValue = "trousers";
   Map<String, double> dimensions = {};
@@ -82,14 +84,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Cette fonction ajoute le vetement dans la base de données
-  Future<void> postClothing(Map<String, double> dims, String imagePath) async {
+  Future<void> postClothing(Map<String, double> dims, String img) async {
     var url = Uri.parse('http://$ipAdress:8000/polls/usermodel/');
     String dimensionsFinal = jsonEncode(dims);
     // Remplacer les guillemets doubles par des guillemets simples
     dimensionsFinal = dimensionsFinal.replaceAll('"', "'");
-
-    final bytes = (await rootBundle.load(imagePath)).buffer.asUint8List();
-    String base64string = base64.encode(bytes);
 
     // on créer l'objet data
     var data = {
@@ -97,7 +96,7 @@ class _HomePageState extends State<HomePage> {
       "dimensions": dimensionsFinal,
       "user": idUser,
       "clothingtype": 3,
-      "image": base64string
+      "image": img
     };
 
     var jsonData = jsonEncode(data);
@@ -118,8 +117,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Cette fonction appelle l'api IA et ajoute le vetement dans la base de donnée
-  void handlingData(String imagePath, String dropdownValue) async {
-    imagePath = "assets/images/slipwomarks.jpg";
+  void handlingData(String imagePath) async {
     try {
       setState(() {
         isLoading = true;
@@ -138,13 +136,13 @@ class _HomePageState extends State<HomePage> {
 
       // On attend que la tâche est complété
       var statusUrl =
-          Uri.parse('http://$ipAdress:8000/keypoints/taskStatus/$taskId');
+      Uri.parse('http://$ipAdress:8000/keypoints/taskStatus/$taskId');
 
       //GET
       var statusResponse = await http.get(statusUrl);
       var status = json.decode(statusResponse.body)['status'];
       while (status != 'SUCCESS') {
-        await Future.delayed(const Duration(seconds: 2));
+        await Future.delayed(Duration(seconds: 2));
         statusResponse = await http.get(statusUrl);
         status = json.decode(statusResponse.body)['status'];
       }
@@ -152,7 +150,7 @@ class _HomePageState extends State<HomePage> {
       // On calcule les dimensions et on ajoute dans la base de donnée
       if (statusResponse.statusCode == 200) {
         dimensions = calculateDimensions(statusResponse
-            .body, dropdownValue); // on stocke les dimensions de la photo dans une map
+            .body); // on stocke les dimensions de la photo dans une map
         postClothing(dimensions, imagePath);
       } else {
         throw Exception('Failed to load');
@@ -167,12 +165,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Cette fonction calcule les dimensions à partir d'un string contenant les keypoints
-  Map<String, double> calculateDimensions(String input, String typeClothe) {
+  Map<String, double> calculateDimensions(String input) {
     final res = json.decode(input);
+    const typeClothe = 'trousers';
     final keypoints = res['result']['keypoints'];
     final dimensions = <String, double>{};
 
-    Map<String, dynamic> connections = {
+    Map<String, dynamic> CONNECTIONS = {
       'blouse': {
         "neck": {'neckline_left', 'neckline_right'},
         "shoulders": {'shoulder_left', 'shoulder_right'},
@@ -220,15 +219,15 @@ class _HomePageState extends State<HomePage> {
       }
     };
 
-    for (var entry in connections[typeClothe].entries) {
+    for (var entry in CONNECTIONS[typeClothe].entries) {
       List<num> tmp = <num>[];
       for (var value in entry.value) {
         String arrayString = keypoints?[value];
 
         List<String> stringValues =
-            arrayString.split("[")[1].split("]")[0].split(",");
+        arrayString.split("[")[1].split("]")[0].split(",");
         List<int> values =
-            stringValues.map((e) => int.parse(e.trim())).toList();
+        stringValues.map((e) => int.parse(e.trim())).toList();
 
         String dtype = arrayString.split("dtype=")[1].split(")")[0];
         var npArray = NumpyArray.fromList(values, dtype: dtype);
@@ -290,7 +289,8 @@ class _HomePageState extends State<HomePage> {
                   _cameraController.takePicture().then((XFile? file) {
                     if (mounted) {
                       if (file != null) {
-                        handlingData(file.path, _dropdownValue);
+                        print(file.path);
+                        handlingData(file.path);
                       }
                     }
                   });
@@ -330,13 +330,13 @@ class _HomePageState extends State<HomePage> {
         ),
         child: isLoading
             ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: Colors.indigo,
-                ),
-              )
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(
+            strokeWidth: 3,
+            color: Colors.indigo,
+          ),
+        )
             : const Center(),
       ),
     );
