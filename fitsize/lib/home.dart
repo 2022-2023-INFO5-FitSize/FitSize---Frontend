@@ -82,11 +82,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Cette fonction ajoute le vetement dans la base de données
-  Future<void> postClothing(Map<String, double> dims, String img) async {
+  Future<void> postClothing(Map<String, double> dims, String imagePath) async {
     var url = Uri.parse('http://$ipAdress:8000/polls/usermodel/');
     String dimensionsFinal = jsonEncode(dims);
     // Remplacer les guillemets doubles par des guillemets simples
     dimensionsFinal = dimensionsFinal.replaceAll('"', "'");
+
+    final bytes = (await rootBundle.load(imagePath)).buffer.asUint8List();
+    String base64string = base64.encode(bytes);
 
     // on créer l'objet data
     var data = {
@@ -94,7 +97,7 @@ class _HomePageState extends State<HomePage> {
       "dimensions": dimensionsFinal,
       "user": idUser,
       "clothingtype": 3,
-      "images": img
+      "image": base64string
     };
 
     var jsonData = jsonEncode(data);
@@ -115,7 +118,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Cette fonction appelle l'api IA et ajoute le vetement dans la base de donnée
-  void handlingData(String imagePath) async {
+  void handlingData(String imagePath, String dropdownValue) async {
+    imagePath = "assets/images/slipwomarks.jpg";
     try {
       setState(() {
         isLoading = true;
@@ -148,7 +152,7 @@ class _HomePageState extends State<HomePage> {
       // On calcule les dimensions et on ajoute dans la base de donnée
       if (statusResponse.statusCode == 200) {
         dimensions = calculateDimensions(statusResponse
-            .body); // on stocke les dimensions de la photo dans une map
+            .body, dropdownValue); // on stocke les dimensions de la photo dans une map
         postClothing(dimensions, imagePath);
       } else {
         throw Exception('Failed to load');
@@ -163,9 +167,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Cette fonction calcule les dimensions à partir d'un string contenant les keypoints
-  Map<String, double> calculateDimensions(String input) {
+  Map<String, double> calculateDimensions(String input, String typeClothe) {
     final res = json.decode(input);
-    const typeClothe = 'trousers';
     final keypoints = res['result']['keypoints'];
     final dimensions = <String, double>{};
 
@@ -287,7 +290,7 @@ class _HomePageState extends State<HomePage> {
                   _cameraController.takePicture().then((XFile? file) {
                     if (mounted) {
                       if (file != null) {
-                        handlingData(file.path);
+                        handlingData(file.path, _dropdownValue);
                       }
                     }
                   });

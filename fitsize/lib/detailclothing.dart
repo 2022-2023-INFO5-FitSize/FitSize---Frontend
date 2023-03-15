@@ -51,7 +51,6 @@ class _DetailsClothesState extends State<DetailClothesPage> {
   fetchData(idClothes) async {
     final response = await http
         .get(Uri.parse('http://$ipAdress:8000/polls/usermodel/$idClothes'));
-
     if (response.statusCode == 200) {
       parseJson(response.body);
       dimensionsMap = parseDimensions(

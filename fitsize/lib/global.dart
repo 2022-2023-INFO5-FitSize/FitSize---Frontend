@@ -1,1 +1,1 @@
-String ipAdress = "192.168.1.12"; // on stocke l'adresse ip dans une variable globale
+String ipAdress = "172.20.10.2"; // on stocke l'adresse ip dans une variable globale

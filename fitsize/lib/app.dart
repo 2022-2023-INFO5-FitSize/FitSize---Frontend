@@ -21,7 +21,7 @@ class _MainAppState extends State<MainApp> {
             icon: Icon(Icons.home),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.book),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
